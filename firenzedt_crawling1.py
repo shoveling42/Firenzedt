@@ -7,12 +7,6 @@ class Crawler:
         
     def get_recent(self):
         refer_list = []
-        refer = {
-            'published': 'dummy data',
-            'title': 'dummy data',
-            'post_content': 'dummy data',
-            'art_link': 'dummy data'
-        }
 
         req = requests.get(self.firenzedt_url)
         soup = BeautifulSoup(req.text, 'html.parser')
@@ -22,14 +16,24 @@ class Crawler:
         post_content = soup.select('[class~="et_pb_ajax_pagination_container"] > article > [class~="post-content"] > div > p')
         art_link = soup.select('[class~="et_pb_ajax_pagination_container"] > article > h2 > a')
         
+        # print(title)
         # 같은 기사가 2개씩 저장돼, 각각 list의 length를 반으로 줄임
         for idx in range(int(len(published)/2)):
+            refer = {
+            'published': 'dummy data',
+            'title': 'dummy data',
+            'post_content': 'dummy data',
+            'art_link': 'dummy data'
+        }
+
             refer['published'] = published[idx].get_text()
             refer['title'] = title[idx].get_text()
             refer['post_content'] = post_content[idx].get_text()
             refer['art_link'] = art_link[idx].get('href')
-            print(refer)
+            # print(refer)
             refer_list.append(refer)
+            print(refer_list)
+            # print(refer_list)
 
         return refer_list
 
@@ -54,7 +58,8 @@ class Crawler:
 
 def main():
     a = Crawler("https://firenzedt.com/") # argument should be an url which type is string
-    print(a.get_recent())
+    # print(a.get_recent())
+    a.get_recent()
     return 0
 
 if __name__ == "__main__":
