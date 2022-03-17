@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import re
 
 class Crawler:
     def __init__(self, firenzedt_url):
@@ -24,7 +23,7 @@ class Crawler:
 
         return max_page
 
-    # store all page's urls
+    # store all page's urls to utilize in the get_recent function
     def get_allurl(self, last_page):
         url_list = []
         for idx in range(1, last_page+1):
@@ -32,34 +31,44 @@ class Crawler:
             url_list.append(url)
         return url_list
 
+    def get_author(self, meta_list):
+        for idx in range(len(meta_list)):
+            req = requests.get(meta_list[idx]['art_link'])
+            soup = BeautifulSoup(req.text, 'html.parser')
+
+            author = soup.select_one('[class~="author"]').get_text()
+            # add author key to meta_list
+            meta_list[idx]['author'] = author
+
+        return meta_list
+
     # get meta datum of recent 4 articles
     def get_recent(self):
-        meta_list = []
+        meta_recent = []
 
         req = requests.get(self.firenzedt_url)
         soup = BeautifulSoup(req.text, 'html.parser')
         
-        published = soup.select('[class~="et_pb_ajax_pagination_container"] > article > p > span')
+        last_edited_date = soup.select('[class~="et_pb_ajax_pagination_container"] > article > p > span')
         title = soup.select('[class~="et_pb_ajax_pagination_container"] > article > h2')
-        post_content = soup.select('[class~="et_pb_ajax_pagination_container"] > article > [class~="post-content"] > div > p')
         art_link = soup.select('[class~="et_pb_ajax_pagination_container"] > article > h2 > a')
-        
-        for idx in range(int(len(published)/2)): # cut the same two articles in half
+
+        for idx in range(int(len(last_edited_date)/2)): # cut the same two articles in half
             refer = {
-            'published': 'dummy data',
+            'last_edited_date': 'dummy data',
             'title': 'dummy data',
-            'post_content': 'dummy data',
             'art_link': 'dummy data'
         }
-            # store published date, title, content, hyperlink in a article
-            refer['published'] = published[idx].get_text()
+            # store last_edited_date, title, content, hyperlink in a article
+            refer['last_edited_date'] = last_edited_date[idx].get_text()
             refer['title'] = title[idx].get_text()
-            refer['post_content'] = post_content[idx].get_text()
             refer['art_link'] = art_link[idx].get('href')
 
-            meta_list.append(refer)
-        
-        return meta_list
+            meta_recent.append(refer)
+
+        meta_recent = self.get_author(meta_recent)
+
+        return meta_recent
     
     def update_article(self, meta_list, meta_recent):
         req = requests.get(self.firenzedt_url)
@@ -73,60 +82,52 @@ class Crawler:
         # when an article is updated
         if (new > latest):
             refer = {
-                'published': 'dummy data',
+                'last_edited_date': 'dummy data',
                 'title': 'dummy data',
-                'post_content': 'dummy data',
                 'art_link': 'dummy data'
             }
-            published = soup.select_one('[class~="et_pb_ajax_pagination_container"] > article > p > span')
+            last_edited_date = soup.select_one('[class~="et_pb_ajax_pagination_container"] > article > p > span')
             title = soup.select_one('[class~="et_pb_ajax_pagination_container"] > article > h2')
-            post_content = soup.select_one('[class~="et_pb_ajax_pagination_container"] > article > [class~="post-content"] > div > p')
             art_link = soup.select_one('[class~="et_pb_ajax_pagination_container"] > article > h2 > a')
-            # store published date, title, content, hyperlink in the new one
-            refer['published'] = published.get_text()
+            # store last_edited_date, title, content, hyperlink in the new one
+            refer['last_edited_date'] = last_edited_date.get_text()
             refer['title'] = title.get_text()
-            refer['post_content'] = post_content.get_text()
             refer['art_link'] = art_link.get('href')
-            # descending sort of meta datum by published date 
+            # descending sort of meta datum by last_edited_date date 
             meta_list.insert(0, refer)
 
         return meta_list
 
     # get the meta datum of the remaining except for the recent articles
     def get_remain(self, url_list):
-        meta_list = []
+        meta_remain = []
         
         # for each page
         for idx in range(len(url_list)):
             req = requests.get(url_list[idx])
             soup = BeautifulSoup(req.text, 'html.parser')
 
-            published = soup.select('[class~="et_pb_salvattore_content"] > article > p > span')
+            last_edited_date = soup.select('[class~="et_pb_salvattore_content"] > article > p > span')
             title = soup.select('[class~="et_pb_salvattore_content"] > article > h2')
-            post_content = soup.select('[class~="et_pb_salvattore_content"] > article > [class~="post-content"] > div > p')
             art_link = soup.select('[class~="et_pb_salvattore_content"] > article > h2 > a')
 
-            # for each article, store published date, title, content, hyperlink
+            # for each article, store last_edited_date, title, content, hyperlink
             for n in range(len(title)):
                 refer = {
-                'published': 'dummy data',
+                'last_edited_date': 'dummy data',
                 'title': 'dummy data',
-                'post_content': 'dummy data',
                 'art_link': 'dummy data'
             }
 
-                refer['published'] = published[n].get_text()
+                refer['last_edited_date'] = last_edited_date[n].get_text()
                 refer['title'] = title[n].get_text()
-                refer['post_content'] = post_content[n].get_text()
                 refer['art_link'] = art_link[n].get('href')
 
-                meta_list.append(refer)
+                meta_remain.append(refer)
+            
+        meta_remain = self.get_author(meta_remain)
 
-        return meta_list
-
-    # store main text for each article
-    # contents 어디에 저장할 지는 작성되지 않음
-    # 태그 제거하려면 주석 코드로 바꾸면 됨
+        return meta_remain
     """
     def store_main_txt(self, meta_list):
         def CleanHtml(html):
@@ -142,6 +143,7 @@ class Crawler:
             
         return 0
     """
+    # store main text for each article
     def store_main_txt(self, meta_list):
         main_txt = []
         for idx in range(len(meta_list)):
@@ -160,9 +162,8 @@ def main():
     meta_recent = a.get_recent()
     meta_remain = a.get_remain(url_list)
     meta_list = meta_recent + meta_remain
-    # 기사 갱신 여부 어떻게 주기적으로 확인하나..
-    meta_list = a.update_article(meta_list, meta_recent)
-    a.store_main_txt(meta_list)
+    # meta_list = a.update_article(meta_list, meta_recent)
+    # a.store_main_txt(meta_list)
 
 if __name__ == "__main__":
     main()
