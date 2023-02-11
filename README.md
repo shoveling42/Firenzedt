@@ -1,3 +1,5 @@
+MAKE_JSON FUNCTION DOESN'T EXIST. I WILL TRY TO UPDATE THE FUNCTION ASAP.
+
 # Introduction
 
 This repository contains crawling a table of Florence(피렌체의 식탁), a media website.
@@ -13,8 +15,12 @@ It could not matter what python version is, but it is recommended to use python 
 
 # Cautions
 
-Out of functions, update_article could be implemented but not perfectly.
+Out of functions, update_article and store_main_txt could be implemented but not perfectly.
 
-It means that you could utilize the function with some services which enable a program to be automatically executed like AWS Lambda, for instance.
+It means that you could utilize the former with some services which enable codes to be automatically executed like AWS Lambda, for instance.
 
-It is strongly recommended NOT to use the code commercially without consent of Medici Media Co, Ltd((주)메디치미디어)!
+Also, the latter could be executed incorrectly depending on article's structure.
+
+# Restrictions
+
+It is strongly recommended NOT to use the code commercially WITHOUT consent of Medici Media Co, Ltd((주)메디치미디어)!
