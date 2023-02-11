@@ -1,6 +1,10 @@
 # Introduction
 
-This repository contains crawling a table of Florence(피렌체의 식탁), a media website. After executing `crawl.py`, you could collect the information on title, last edited date, author, url for each article. It is strongly recommended NOT to use the code commercially without consent of Medici Media Co, Ltd!
+This repository contains crawling a table of Florence(피렌체의 식탁), a media website.
+
+After executing `crawl.py`, you could collect the information on title, last edited date, author, url for each article.
+
+It is strongly recommended NOT to use the code commercially without consent of Medici Media Co, Ltd((주)메디치미디어)!
 
 # Prerequisites
 
@@ -11,4 +15,6 @@ It could not matter what python version is, but it is recommended to use python 
 
 # Cautions
 
-Out of functions, update_article could be implemented but not perfectly. It means that you could utilize the function with some services which enable to automatically execute, for instance AWS Lambda.
+Out of functions, update_article could be implemented but not perfectly.
+
+It means that you could utilize the function with some services which enable a program to be automatically executed like AWS Lambda, for instance.
