@@ -23,4 +23,4 @@ Also, the latter could be executed incorrectly depending on article's structure.
 
 # Restrictions
 
-It is strongly recommended NOT to use the code commercially WITHOUT consent of Medici Media Co, Ltd((주)메디치미디어)!
+It is strongly required NOT to use the code commercially WITHOUT consent of Medici Media Co, Ltd((주)메디치미디어)!
