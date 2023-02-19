@@ -1,6 +1,6 @@
 MAKE_JSON FUNCTION DOESN'T EXIST.
 
-# Crawling table of Florence(피렌체의 식탁)
+# Crawling Table of Florence(피렌체의 식탁)
 
 This repository contains crawling table of Florence(피렌체의 식탁), a media website.
 
