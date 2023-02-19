@@ -1,8 +1,8 @@
 MAKE_JSON FUNCTION DOESN'T EXIST.
 
-# Introduction
+# Crawling table of Florence(피렌체의 식탁)
 
-This repository contains crawling a table of Florence(피렌체의 식탁), a media website.
+This repository contains crawling table of Florence(피렌체의 식탁), a media website.
 
 After executing `crawl.py`, you could collect the information on title, last edited date, author, url for each article.
 
